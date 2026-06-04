@@ -45,8 +45,8 @@ class OnlineSimulationPage:
         self.confirm_back_2.click()
 
     def download_results(self, task_name: str, download_path: str):
+        print(f"Looking for task: {task_name}")
         row = self.page.locator("tr").filter(has=self.page.locator(f"span:text-is('{task_name}')"))
-        row.locator("span.case-state-2").first.wait_for(state="visible", timeout = 0)
         
         download_button = row.locator("button.download")
         download_button.wait_for(state="visible", timeout = 0)

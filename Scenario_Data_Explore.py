@@ -30,7 +30,9 @@ for file_path in list_zips:
             base_name = Path(file_path).stem.split("-2020-")
             zip_name = abbrev.get(base_name[0])
             wb.create_sheet(title = f"{zip_name}-{base_name[1]}")
-            output_path = Path(file_path).parent.parent / "NC Files" / f"{zip_name}-{base_name[1]}.nc"
+            
+            year = base_name[1].split("_")[0]
+            output_path = Path(file_path).parent.parent / "NC Files" / f"EmissionReductions2035_{base_name[0]}_{year}Met.nc"
             with open(output_path, "wb") as dst:
                 dst.write(src.read())
                 
