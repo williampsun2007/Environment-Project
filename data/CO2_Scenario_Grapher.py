@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import matplotlib.patches as mpatches
 
-baseline_path = r"C:\Users\sunyi\Environment_Project\Baseline_All_Years"
-clean_air_path = r"C:\Users\sunyi\Environment_Project\CleanAir_All_Years"
-otpca_path = r"C:\Users\sunyi\Environment_Project\OTPCA_All_Years"
-otpnzca_path = r"C:\Users\sunyi\Environment_Project\OTPNZCA_All_Years"
-epnzca_path = r"C:\Users\sunyi\Environment_Project\EPNZCA_All_Years"
+baseline_path = "Baseline_All_Years"
+clean_air_path = "CleanAir_All_Years"
+otpca_path = "OTPCA_All_Years"
+otpnzca_path = "OTPNZCA_All_Years"
+epnzca_path = "EPNZCA_All_Years"
 
 fig, axes = plt.subplots(nrows = 5, ncols = 1, figsize = (14, 30))
 
@@ -55,6 +55,6 @@ handles = [mpatches.Patch(color=color, label=dept) for dept, color in department
 fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.02), ncol=len(department_colors))
 
 plt.tight_layout(h_pad = 4)
-plt.savefig(r"C:\Users\sunyi\Environment_Project\Emission Files\CO2_Scenarios.png", bbox_inches="tight")
+plt.savefig("Emission Files/CO2_Scenarios.png", bbox_inches="tight")
 plt.show()
     

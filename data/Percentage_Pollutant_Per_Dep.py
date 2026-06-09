@@ -1,7 +1,7 @@
 import openpyxl
 from openpyxl.styles import Font
 
-wb_raw = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\on-time_peak-net_zero-clean_air\2020_2035_Raw.xlsx")
+wb_raw = openpyxl.load_workbook("on-time_peak-net_zero-clean_air/2020_2035_Raw.xlsx")
 
 wb_edit = openpyxl.Workbook()
 
@@ -53,5 +53,5 @@ for sheet_name in wb_raw.sheetnames:
             if wb_edit[sheet_name].cell(row = r, column = c - 1).value >= 50:
                 wb_edit[sheet_name].cell(row = r, column = c - 1).font = red_font
                 
-wb_edit.save(r"C:\Users\sunyi\Environment_Project\on-time_peak-net_zero-clean_air\Percentage_Pollutant_Per_Dep.xlsx")
+wb_edit.save("on-time_peak-net_zero-clean_air/Percentage_Pollutant_Per_Dep.xlsx")
 print("Finished!")

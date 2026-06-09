@@ -8,7 +8,7 @@ import openpyxl
 wb = openpyxl.Workbook()
 wb.remove(wb.active)
 
-file_path = Path(r"C:\Users\sunyi\Environment_Project\Excel Downloads")
+file_path = Path("Excel Downloads")
 
 list_zips = file_path.glob("*.zip")
 
@@ -32,7 +32,7 @@ for file_path in list_zips:
             wb.create_sheet(title = f"{zip_name}-{base_name[1]}")
             
             year = base_name[1].split("_")[0]
-            output_path = Path(file_path).parent.parent / "NC Files" / f"EmissionReductions2035_{base_name[0]}_{year}Met.nc"
+            output_path = Path(file_path).parent.parent / "NC Files and Emission Reports" / f"EmissionReductions2035_{base_name[0]}_{year}Met.nc"
             with open(output_path, "wb") as dst:
                 dst.write(src.read())
                 
@@ -62,5 +62,5 @@ for file_path in list_zips:
     
 print(wb.sheetnames)
     
-wb.save(r"C:\Users\sunyi\Environment_Project\Emission Excel Files\Percent_China_Over_25.xlsx")
+wb.save("Emission Files/Percent_China_Over_25.xlsx")
 print("Done!")

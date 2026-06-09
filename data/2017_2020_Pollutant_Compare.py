@@ -1,9 +1,9 @@
 import pandas as pd
 
-with pd.ExcelWriter(r"C:\Users\sunyi\Environment_Project\Emission Files\2017_2020_Emission_Comparison.xlsx", mode='a', if_sheet_exists='replace') as writer:
+with pd.ExcelWriter("Emission Files/2017_2020_Emission_Comparison.xlsx", mode='a', if_sheet_exists='replace') as writer:
     for pollutant in ["SO2", "NOx", "VOC", "NH3", "PM25", "PM10", "BC", "OC"]:
-        df_2017 = pd.read_excel(r"C:\Users\sunyi\Environment_Project\Emission Files\2017_emission_report.xlsx", pollutant)
-        df_2020 = pd.read_excel(r"C:\Users\sunyi\Environment_Project\Emission Files\2020_emission_report.xlsx", pollutant)
+        df_2017 = pd.read_excel("Emission Files/2017_emission_report.xlsx", pollutant)
+        df_2020 = pd.read_excel("Emission Files/2020_emission_report.xlsx", pollutant)
     
         df_2017 = df_2017.set_index("sector")
         df_2020 = df_2020.set_index("sector")

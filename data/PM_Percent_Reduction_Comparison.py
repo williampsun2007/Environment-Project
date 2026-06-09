@@ -1,8 +1,8 @@
 import openpyxl
 from openpyxl.styles import Font
 
-wb = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\early_peak-net_zero-clean_air\2020_2035_change_percentage.xlsx")
-wb_raw = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\early_peak-net_zero-clean_air\2020_2035_Raw.xlsx")
+wb = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_change_percentage.xlsx")
+wb_raw = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_Raw.xlsx")
 
 region_sector_reduction = {}
 
@@ -71,7 +71,7 @@ for key, value in region_sector_reduction.items():
     
     index += 1
 
-wb_edit.save(r"C:\Users\sunyi\Environment_Project\early_peak-net_zero-clean_air\PM_Reduction_Comparison.xlsx")
+wb_edit.save("early_peak-net_zero-clean_air/PM_Reduction_Comparison.xlsx")
 
 print("Finished!")
     

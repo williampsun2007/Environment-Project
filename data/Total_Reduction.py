@@ -1,7 +1,7 @@
 import openpyxl
 
-wb_2020 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\baseline\baseline_2020_Emission.xlsx")
-wb_2035 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\baseline\clean_air_2035_Emission.xlsx")
+wb_2020 = openpyxl.load_workbook("baseline/baseline_2020_Emission.xlsx")
+wb_2035 = openpyxl.load_workbook("baseline/baseline_2035_Emission.xlsx")
 
 for sheet_name in ['SO2', 'NOx', 'VOC', 'NH3', 'PM25', 'PM10', 'BC', 'OC']:
     total_species_reduction = 0

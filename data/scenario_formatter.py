@@ -1,8 +1,8 @@
 import openpyxl
 
-wb = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\early_peak-net_zero-clean_air\2020_2035_change_percentage.xlsx")
+wb = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_change_percentage.xlsx")
 
-wb_edit = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\Emission Excel Files\管控方案模板.xlsx")
+wb_edit = openpyxl.load_workbook("Emission Files/管控方案模板.xlsx")
 ws_edit = wb_edit["管控方案"]
 ws_edit.delete_rows(3, 10000)
 
@@ -26,6 +26,6 @@ for sheet_name in ["SO2", "NOX", "VOC", "NH3", "PM2.5"]:
 
 
 for weather_year in range(2017, 2025):
-    wb_edit.save(rf"C:\Users\sunyi\Environment_Project\Scenario Excel Files\early_peak-net_zero-clean_air-2020-{weather_year}_2020_{weather_year}.xlsx")
+    wb_edit.save(f"Scenario Excel Files/early_peak-net_zero-clean_air-2020-{weather_year}_2020_{weather_year}.xlsx")
 
 print("Finished!")

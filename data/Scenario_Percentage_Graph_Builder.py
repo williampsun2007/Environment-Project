@@ -3,11 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-df = pd.read_excel(r"C:\Users\sunyi\Environment_Project\Emission Files\Grid_Data.xlsx", sheet_name = "Sheet")
+df = pd.read_excel("Emission Files/Grid_Data.xlsx", sheet_name = "Sheet")
 
 fig, axes = plt.subplots(nrows = 8, ncols = 5, figsize = (14, 20))
-
-years = [2020, 2025, 2030, 2035, 2040, 2045, 2050, 2055, 2060]
 
 department_colors = {"Power": "blue", "Industry": "orange", "Transportation": "green", "Residential": "red", "Agriculture": "purple"}
 
@@ -39,5 +37,5 @@ handles = [mpatches.Patch(color=color, label=dept) for dept, color in department
 fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.02), ncol=len(department_colors))
 
 plt.tight_layout()
-plt.savefig(r"C:\Users\sunyi\Environment_Project\Emission Files\Stacked_Bar_Chart_Percentage.png", bbox_inches="tight")
+plt.savefig("Emission Files/Stacked_Bar_Chart_Percentage.png", bbox_inches="tight")
 plt.show()

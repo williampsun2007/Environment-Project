@@ -33,7 +33,7 @@ for scenario_idx, sample in enumerate(samples):
         low, high = reduction_ranges[pollutant]
         reductions[pollutant] = round(low + sample[i] * (high - low), 2)
 
-    wb = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\管控方案模板.xlsx")
+    wb = openpyxl.load_workbook("Emission Files/管控方案模板.xlsx")
     ws = wb['管控方案']
     ws.delete_rows(3, 10000)
 
@@ -48,6 +48,6 @@ for scenario_idx, sample in enumerate(samples):
     for row in rows:
         ws.append([row.get("Province"), row.get("Department"), row.get("Pollutant"), row.get("Reduction (%)")])
 
-    wb.save(rf"C:\Users\sunyi\Environment_Project\May-21-2026_Excel_Files\May-21-2026-{scenario_idx:03d}_2017_2017.xlsx")
+    wb.save(f"May-21-2026_Excel_Files/May-21-2026-{scenario_idx:03d}_2017_2017.xlsx")
 
 print("All scenarios generated!")

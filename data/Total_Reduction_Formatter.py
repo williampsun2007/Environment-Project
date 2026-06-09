@@ -1,8 +1,8 @@
 import openpyxl
 
-wb_2020 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\early_peak-net_zero-clean_air\2020_Emission.xlsx")
-wb_2035 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\early_peak-net_zero-clean_air\2035_Emission.xlsx")
-wb = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\Emission Excel Files\Total Reduction and Increase Per Pollutant.xlsx")
+wb_2020 = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_Emission.xlsx")
+wb_2035 = openpyxl.load_workbook("early_peak-net_zero-clean_air/2035_Emission.xlsx")
+wb = openpyxl.load_workbook("Emission Files/Total Reduction and Increase Per Pollutant.xlsx")
 
 for sheet_name in ['SO2', 'NOx', 'VOC', 'NH3', 'PM25', 'PM10', 'BC', 'OC']:
     total_species_reduction = 0
@@ -24,7 +24,7 @@ for sheet_name in ['SO2', 'NOx', 'VOC', 'NH3', 'PM25', 'PM10', 'BC', 'OC']:
     wb[sheet_name].append(["early_peak-net_zero-clean_air", total_species_reduction, total_species_increase, 
                            total_species_increase / total_species_reduction * 100 if total_species_reduction != 0 else 0])
     
-wb.save(r"C:\Users\sunyi\Environment_Project\Emission Excel Files\Total Reduction and Increase Per Pollutant.xlsx")
+wb.save("Emission Files/Total Reduction and Increase Per Pollutant.xlsx")
     
 print("Finished!")
             
