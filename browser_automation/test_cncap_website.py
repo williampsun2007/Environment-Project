@@ -1,4 +1,3 @@
-import re
 from playwright.sync_api import Playwright
 from cnacp_login_page import LoginPage
 from cnacp_home_page import HomePage

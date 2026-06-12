@@ -1,6 +1,3 @@
-from socket import timeout
-import time
-from urllib import response
 import requests
 from playwright.sync_api import Page
 
@@ -45,19 +42,15 @@ class OnlineSimulationPage:
         self.confirm_back_2.click()
 
     def download_results(self, task_name: str, download_path: str):
-        print(f"Looking for task: {task_name}")
+        print(f"Downloading task: {task_name}")
         row = self.page.locator("tr").filter(has=self.page.locator(f"span:text-is('{task_name}')"))
-        
+    
         download_button = row.locator("button.download")
-        download_button.wait_for(state="visible", timeout = 0)
+        download_button.wait_for(state="visible", timeout=0)
 
         with self.page.expect_download(timeout=0) as download_info:
             download_button.click()
 
         download = download_info.value
-        download_url = download.url
-
-        response = requests.get(download_url, stream=True)
-        with open(download_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+        download.save_as(download_path)
+        print(f"Finished downloading: {task_name}")
