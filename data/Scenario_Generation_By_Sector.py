@@ -1,4 +1,3 @@
-import pandas as pd
 import openpyxl
 
 sectors = ["电力", "工业", "交通", "民用", "农业"]

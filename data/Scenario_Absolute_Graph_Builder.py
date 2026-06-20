@@ -16,7 +16,7 @@ for i, pollutant in enumerate(["SO2", "NOx", "VOC", "NH3", "PM25", "PM10", "BC",
         ax = axes[i][j]
         
         subset = df[(df["Pollutant"] == pollutant) & (df["Scenario"] == scenario)]
-        pivot = subset.pivot(index = "Year", columns = "Department", values ="Total")
+        pivot = subset.pivot(index = "Year", columns = "Department", values = "Total")
         
         x = np.arange(len(pivot))
         bottom = np.zeros(len(pivot))

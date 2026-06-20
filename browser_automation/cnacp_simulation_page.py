@@ -1,4 +1,3 @@
-import requests
 from playwright.sync_api import Page
 
 class OnlineSimulationPage:

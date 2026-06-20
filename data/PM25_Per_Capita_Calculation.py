@@ -1,5 +1,4 @@
 import pandas as pd
-from pathlib import Path
 
 df = pd.read_csv("Population_Projection/Population_Projection_Data/Province/Pop_TOTAL.csv")
 df.dropna(inplace = True)

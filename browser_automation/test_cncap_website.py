@@ -12,25 +12,25 @@ def test_run(playwright: Playwright) -> None:
     print("SCRIPT STARTED")
 
     if getattr(sys, 'frozen', False):
-        base_path = Path(sys.executable).parent
+        base_path = Path(sys.executable).parent.parent
     else:
-        base_path = Path(__file__).parent
+        base_path = Path(__file__).parent.parent
 
     #Load environment variables from .env file
-    load_dotenv(dotenv_path=base_path / ".env")
+    load_dotenv(dotenv_path = base_path / ".env")
 
     #Use pathlib to get all the excel files in the specified folder, loop through them and upload each file using the file chooser
     base_folder = Path(os.getenv("APP_FILE_PATH"))
     batch_folders = [f for f in base_folder.iterdir() if f.is_dir()]
 
-    for batch_folder in batch_folders:
+    for i, batch_folder in enumerate(batch_folders):
         try: 
             #Set up the browser and page
             try:
                 #Use chrome if available, otherwise use edge
-                browser = playwright.chromium.launch(headless=False, channel = "chrome")
+                browser = playwright.chromium.launch(headless = False, channel = "chrome")
             except:
-                browser = playwright.chromium.launch(headless=False, channel = "msedge")
+                browser = playwright.chromium.launch(headless = False, channel = "msedge")
 
             context = browser.new_context()
             page = context.new_page()
@@ -84,7 +84,8 @@ def test_run(playwright: Playwright) -> None:
             context.close()
             browser.close()
 
-            time.sleep(3600)
+            if i + 1 < len(batch_folders):
+                time.sleep(3600)
         except Exception as e:
             if context:
                 context.close()

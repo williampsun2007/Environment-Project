@@ -1,5 +1,4 @@
 from scipy.stats.qmc import Sobol
-import pandas as pd
 from itertools import product
 import openpyxl
 

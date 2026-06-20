@@ -117,11 +117,11 @@ for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
             gdf['color'] = gdf['province'].apply(get_color)
             gdf.plot(color = gdf['color'], ax = ax[index][index_2], edgecolor='black', linewidth=0.1)
             
-    plt.subplots_adjust(hspace=0.1, wspace=0.05)
+    plt.subplots_adjust(hspace = 0.1, wspace = 0.05)
     
-    sm = cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm = cm.ScalarMappable(cmap = cmap, norm = norm)
     sm.set_array([])
-    cbar = plt.colorbar(sm, ax=ax, orientation='vertical', pad=0.02)
+    cbar = plt.colorbar(sm, ax = ax, orientation = 'vertical', pad = 0.02)
     cbar.set_label('Emission Change 2020-2035 (tons)', fontsize=14)
     cbar.set_ticks(pollutant_ticks[pollutant])
     cbar.set_ticklabels(pollutant_ticklabels[pollutant])
@@ -129,8 +129,8 @@ for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
     for index, scenario in enumerate(["Baseline", "CleanAir", "OTPCA", "OTPNZCA", "EPNZCA"]):
         ax[0][index].set_title(scenario)
     for index, sector in enumerate(["Power", "Industry", "Transportation", "Residential", "Agriculture"]):
-        ax[index][0].text(-0.15, 0.5, sector, transform=ax[index][0].transAxes,
-                      fontsize=14, va='center', rotation='vertical')
+        ax[index][0].text(-0.15, 0.5, sector, transform = ax[index][0].transAxes,
+                      fontsize = 14, va = 'center', rotation = 'vertical')
 
     fig.suptitle(f'Emission Change from 2020 to 2035 for {pollutant}', fontsize=18, fontweight='bold')
     plt.savefig(f"Emission Files/Pollutant Change Province Maps/{pollutant}_Map.png")
