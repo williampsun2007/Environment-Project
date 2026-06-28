@@ -40,13 +40,13 @@ province_dict = {
 }
 
 records = []
-for province in get_adm_maps(level='省'):
+for province in get_adm_maps(level = '省'):
     records.append({
         'province': province['province'],
         'geometry': province['geometry']
     })
 
-province_map = gpd.GeoDataFrame(records, crs='EPSG:4326')
+province_map = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
 
 ds = xr.open_dataset("2020_Base_Data/PM25.nc")
 lon_flat = ds["lon"].values.flatten()
@@ -57,15 +57,15 @@ china = world[world['NAME'] == 'China']
 in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
 
 points_gdf = gpd.GeoDataFrame(
-    geometry=[Point(lon, lat) for lon, lat in zip(lon_flat, lat_flat)],
-    crs='EPSG:4326'
+    geometry = [Point(lon, lat) for lon, lat in zip(lon_flat, lat_flat)],
+    crs = 'EPSG:4326'
 )
 
 points_gdf = points_gdf[in_china_flat]
 lon_flat = lon_flat[in_china_flat]
 lat_flat = lat_flat[in_china_flat]
 
-joined = gpd.sjoin(points_gdf, province_map, how='left', predicate='within')
+joined = gpd.sjoin(points_gdf, province_map, how = 'left', predicate = 'within')
 joined = joined[['province']]
 joined['lon'] = lon_flat
 joined['lat'] = lat_flat
@@ -83,8 +83,6 @@ for col in df_population.columns:
         
 df_population.drop(drop_cols, axis = 1, inplace = True)
 df_population = df_population.set_index("V1")
-
-print("Here!!!")
 
 pm25_data = ds["pred_PM25"].mean(dim = "time").values.flatten()[in_china_flat]
 joined["pm25"] = pm25_data

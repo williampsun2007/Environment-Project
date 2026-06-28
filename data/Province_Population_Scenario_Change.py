@@ -44,13 +44,13 @@ province_map = {
 }
 
 records = []
-for province in get_adm_maps(level='省'):
+for province in get_adm_maps(level = '省'):
     records.append({
         'province': province['province'],
         'geometry': province['geometry']
     })
 
-gdf = gpd.GeoDataFrame(records, crs='EPSG:4326')
+gdf = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
 
 col_not_2020_2035 = []
 for col in df.columns:
@@ -62,32 +62,32 @@ for fer in range(1, 6):
         scenario = f"_SSPFer{fer}_SSPMigr{mig}"
         df_scenario = df[df["V2"] == scenario]
         df_scenario = df_scenario.drop(col_not_2020_2035, axis = 1)
-        df_scenario['Difference'] = df_scenario["2035"] - df_scenario["2020"]
+        df_scenario['Percent Change'] = ((df_scenario["2035"] - df_scenario["2020"]) / df_scenario["2020"]) * 100
         
         fig = plt.figure(figsize = (12, 10))
-        ax = plt.axes(projection=ccrs.PlateCarree())
-        norm = mcolors.TwoSlopeNorm(vmin=-15e6, vcenter=0, vmax=15e6)
+        ax = plt.axes(projection = ccrs.PlateCarree())
+        norm = mcolors.TwoSlopeNorm(vmin = -25, vcenter = 0, vmax = 25)
         cmap = cm.RdYlGn
         
         def get_color(name):
             if name in province_map and name not in ["台湾省", "香港特别行政区", "澳门特别行政区"]:
                 rows = df_scenario[df_scenario['V1'] == province_map[name]]
                 if not rows.empty:
-                    return cmap(norm(rows.iloc[0]['Difference']))
+                    return cmap(norm(rows.iloc[0]['Percent Change']))
             return 'lightgrey'
         
         gdf['color'] = gdf['province'].apply(get_color)
-        gdf.plot(color=gdf['color'], ax=ax, edgecolor='black', linewidth=0.5)
+        gdf.plot(color = gdf['color'], ax = ax, edgecolor = 'black', linewidth = 0.5)
                 
-        sm = cm.ScalarMappable(cmap=cmap, norm=norm)
+        sm = cm.ScalarMappable(cmap = cmap, norm = norm)
         sm.set_array([])
-        cbar = plt.colorbar(sm, ax=ax, orientation='vertical', pad=0.02)
-        cbar.set_label('Population Change 2020–2035')
-        cbar.set_ticks([-15e6, -10e6, -5e6, 0, 5e6, 10e6, 15e6])
-        cbar.set_ticklabels(['-15M', '-10M', '-5M', '0', '+5M', '+10M', '+15M'])
+        cbar = plt.colorbar(sm, ax = ax, orientation = 'vertical', pad = 0.02)
+        cbar.set_label('Population Percent Change from 2020 to 2035')
+        cbar.set_ticks([-25, -15, -5, 0, 5, 15, 25])
+        cbar.set_ticklabels(['-25%', '-15%', '-5%', '0', '5%', '15%', '25%'])
 
-        plt.title(f"Population Change by Province for Scenario {scenario}")
-        plt.savefig(f"Emission Files/15 Scenario Population Province Change/{scenario}_Scenario.png")
+        plt.title(f"Population Percent Change by Province for Scenario {scenario} from 2020 to 2035")
+        plt.savefig(f"Emission Files/15 Scenario Population Percent Change/{scenario}_Scenario.png")
         plt.close(fig)
 
 print("Finished!")

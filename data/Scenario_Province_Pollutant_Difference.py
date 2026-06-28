@@ -65,41 +65,41 @@ pollutant_norms = {
 }
 
 pollutant_ticks = {
-    "SO2": [-520000, -100000, -10000, 0, 10000, 50000, 100000, 200000],
-    "NOX": [-400000, -100000, -10000, 0, 10000, 50000, 100000, 180000],
-    "VOC": [-660000, -100000, -10000, 0, 10000, 50000, 100000, 260000],
+    "SO2": [-520000, -100000, -50000, -10000, 0, 10000, 50000, 100000, 200000],
+    "NOX": [-400000, -100000, -50000, -10000, 0, 10000, 50000, 100000, 180000],
+    "VOC": [-660000, -100000, -50000, -10000, 0, 10000, 50000, 100000, 260000],
     "NH3":   [-180000, -10000, -1000, 0, 1000, 10000, 30000],
     "PM2.5": [-310000, -50000, -5000, 0, 5000, 50000, 110000],
-    "PM10": [-380000, -50000, -5000, 0, 5000, 20000, 50000, 140000],
+    "PM10": [-380000, -50000, -20000, 5000, 0, 5000, 20000, 50000, 140000],
     "BC":    [-80000, -10000, -1000, 0, 1000, 10000, 30000],
-    "OC": [-160000, -10000, -1000, 0, 1000, 10000, 30000, 60000]
+    "OC": [-160000, -30000, -10000, -1000, 0, 1000, 10000, 30000, 60000]
 }
 
 pollutant_ticklabels = {
-    "SO2": ['-520K', '-100K', '-10K', '0', '+10K', '+50K', '+100K', '+200K'],
-    "NOX": ['-400K', '-100K', '-10K', '0', '+10K', '+50K', '+100K', '+180K'],
-    "VOC": ['-660K', '-100K', '-10K', '0', '+10K', '+50K', '+100K', '+260K'],
+    "SO2": ['-520K', '-100K', '-50k', '-10K', '0', '+10K', '+50K', '+100K', '+200K'],
+    "NOX": ['-400K', '-100K', '-50k', '-10K', '0', '+10K', '+50K', '+100K', '+180K'],
+    "VOC": ['-660K', '-100K', '-50k', '-10K', '0', '+10K', '+50K', '+100K', '+260K'],
     "NH3":   ['-180K', '-10K', '-1K', '0', '+1K', '+10K', '+30K'],
     "PM2.5": ['-310K', '-50K', '-5K', '0', '+5K', '+50K', '+110K'],
-    "PM10": ['-380K', '-50K', '-5K', '0', '+5K', '+20K', '+50K', '+140K'],
+    "PM10": ['-380K', '-50K', '-20k', '-5K', '0', '+5K', '+20K', '+50K', '+140K'],
     "BC":    ['-80K', '-10K', '-1K', '0', '+1K', '+10K', '+30K'],
-    "OC": ['-160K', '-10K', '-1K', '0', '+1K', '+10K', '+30K', '+60K']
+    "OC": ['-160K', '-30k', '-10K', '-1K', '0', '+1K', '+10K', '+30K', '+60K']
 }
 
 records = []
-for province in get_adm_maps(level='省'):
+for province in get_adm_maps(level = '省'):
     records.append({
         'province': province['province'],
         'geometry': province['geometry']
     })
 
-gdf = gpd.GeoDataFrame(records, crs='EPSG:4326')
+gdf = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
 
 for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
     cmap = cm.RdYlGn
     norm = pollutant_norms[pollutant]
     
-    fig, ax = plt.subplots(nrows = 5, ncols = 5, figsize = (30, 25), subplot_kw={'projection': ccrs.PlateCarree()})
+    fig, ax = plt.subplots(nrows = 5, ncols = 5, figsize = (30, 25), subplot_kw = {'projection': ccrs.PlateCarree()})
     
     for index, sector in enumerate(["Power", "Industry", "Transportation", "Residential", "Agriculture"]):
         for index_2, workbook in enumerate(workbook_arr):
@@ -114,15 +114,22 @@ for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
                        
                 return 'lightgrey'   
             
+            total_2020 = sum(sheet.cell(index + 3, c).value for c in range(3, 34))
+            total_2035 = sum(sheet.cell(index + 12, c).value for c in range(3, 34))
+            
             gdf['color'] = gdf['province'].apply(get_color)
-            gdf.plot(color = gdf['color'], ax = ax[index][index_2], edgecolor='black', linewidth=0.1)
+            gdf.plot(color = gdf['color'], ax = ax[index][index_2], edgecolor = 'black', linewidth = 0.1)
+            
+            ax[index][index_2].text(0.5, 0.02, f"2020: {total_2020/1000:.0f}K  |  2035: {total_2035/1000:.0f}K", 
+                                    transform = ax[index][index_2].transAxes, fontsize = 12, ha = 'center', va = 'bottom', 
+                                    bbox = dict(boxstyle='round,pad=0.2', fc = 'white', alpha = 0.7))
             
     plt.subplots_adjust(hspace = 0.1, wspace = 0.05)
     
     sm = cm.ScalarMappable(cmap = cmap, norm = norm)
     sm.set_array([])
     cbar = plt.colorbar(sm, ax = ax, orientation = 'vertical', pad = 0.02)
-    cbar.set_label('Emission Change 2020-2035 (tons)', fontsize=14)
+    cbar.set_label('Emission Change 2020-2035 (tons)', fontsize = 14)
     cbar.set_ticks(pollutant_ticks[pollutant])
     cbar.set_ticklabels(pollutant_ticklabels[pollutant])
     
@@ -132,7 +139,7 @@ for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
         ax[index][0].text(-0.15, 0.5, sector, transform = ax[index][0].transAxes,
                       fontsize = 14, va = 'center', rotation = 'vertical')
 
-    fig.suptitle(f'Emission Change from 2020 to 2035 for {pollutant}', fontsize=18, fontweight='bold')
+    fig.suptitle(f'Emission Change from 2020 to 2035 for {pollutant}', fontsize = 18, fontweight = 'bold')
     plt.savefig(f"Emission Files/Pollutant Change Province Maps/{pollutant}_Map.png")
     plt.close(fig)
     

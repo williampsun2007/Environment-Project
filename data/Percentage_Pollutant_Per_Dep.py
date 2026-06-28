@@ -11,7 +11,7 @@ provinces = ["北京市", "天津市", "河北省", "山西省", "内蒙古自�
              "重庆市", "四川省", "贵州省", "云南省", "西藏自治区", "陕西省", "甘肃省", 
              "青海省", "宁夏回族自治区", "新疆维吾尔自治区"]
 
-red_font = Font(color="FF0000", bold=True)
+red_font = Font(color = "FF0000", bold = True)
 
 for sheet_name in wb_raw.sheetnames:
     wb_edit.create_sheet(title = sheet_name)

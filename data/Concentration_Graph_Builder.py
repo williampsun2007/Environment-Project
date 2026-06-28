@@ -65,13 +65,13 @@ path_nc_files = Path("NC Files and Emission Reports")
 nc_files = sorted(path_nc_files.glob("*.nc"))
 
 records = []
-for province in get_adm_maps(level='省'):
+for province in get_adm_maps(level = '省'):
     records.append({
         'province': province['province'],
         'geometry': province['geometry']
     })
 
-province_map = gpd.GeoDataFrame(records, crs='EPSG:4326')
+province_map = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
 
 ds = xr.open_dataset(nc_files[0])
 lon_flat = ds["lon"].values.flatten()
@@ -82,15 +82,15 @@ china = world[world['NAME'] == 'China']
 in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
 
 points_gdf = gpd.GeoDataFrame(
-    geometry=[Point(lon, lat) for lon, lat in zip(lon_flat, lat_flat)],
-    crs='EPSG:4326'
+    geometry = [Point(lon, lat) for lon, lat in zip(lon_flat, lat_flat)],
+    crs = 'EPSG:4326'
 )
 
 points_gdf = points_gdf[in_china_flat]
 lon_flat = lon_flat[in_china_flat]
 lat_flat = lat_flat[in_china_flat]
 
-joined = gpd.sjoin(points_gdf, province_map, how='left', predicate='within')
+joined = gpd.sjoin(points_gdf, province_map, how = 'left', predicate = 'within')
 joined = joined[['province']]
 joined['region'] = joined['province'].map(province_to_region).fillna('Other')
 joined['lon'] = lon_flat

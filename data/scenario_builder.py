@@ -21,8 +21,8 @@ reduction_ranges = {
 }
 
 num_scenarios = 128
-sampler = Sobol(d=5, scramble=True)
-samples = sampler.random(n=num_scenarios)
+sampler = Sobol(d = 5, scramble  =True)
+samples = sampler.random(n = num_scenarios)
 
 for scenario_idx, sample in enumerate(samples):
     rows = []
