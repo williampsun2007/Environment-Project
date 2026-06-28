@@ -2,10 +2,9 @@ import cartopy.crs as ccrs
 import openpyxl
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import matplotlib.colors as mcolors
 from cnmaps import get_adm_maps
 import geopandas as gpd
-from matplotlib.colors import LinearSegmentedColormap, Normalize
+from matplotlib.colors import Normalize
 
 wb_baseline_2030 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\baseline\baseline_2030_Emission.xlsx")
 wb_baseline_2035 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\baseline\baseline_2035_Emission.xlsx")

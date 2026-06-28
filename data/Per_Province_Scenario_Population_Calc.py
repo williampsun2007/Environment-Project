@@ -138,7 +138,7 @@ ny, nx = wrf_lat.shape
 HALF_WRF_DEG = 0.18
 
 with rasterio.open(TIF_PATH) as src:
-    wrf_raster = np.full(shape, -1, dtype=np.int32)
+    wrf_raster = np.full(shape, -1, dtype = np.int32)
     
     for i in range(ny):
         for j in range(nx):
