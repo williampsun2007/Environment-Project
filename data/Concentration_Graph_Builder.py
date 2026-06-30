@@ -7,6 +7,7 @@ import pandas as pd
 from shapely.geometry import Point
 import shapely
 from matplotlib.patches import Patch
+import numpy as np
 
 province_to_region = {
     '北京市': 'BTHS',
@@ -61,7 +62,7 @@ province_dict = {
     "新疆维吾尔自治区": "Xinjiang"
 }
 
-path_nc_files = Path("NC Files and Emission Reports")
+path_nc_files = Path("NC Files and Emission Reports - 2020 to 2035")
 nc_files = sorted(path_nc_files.glob("*.nc"))
 
 records = []
@@ -86,35 +87,18 @@ points_gdf = gpd.GeoDataFrame(
     crs = 'EPSG:4326'
 )
 
-points_gdf = points_gdf[in_china_flat]
-lon_flat = lon_flat[in_china_flat]
-lat_flat = lat_flat[in_china_flat]
-
 joined = gpd.sjoin(points_gdf, province_map, how = 'left', predicate = 'within')
 joined = joined[['province']]
 joined['region'] = joined['province'].map(province_to_region).fillna('Other')
-joined['lon'] = lon_flat
-joined['lat'] = lat_flat
 
-amount_grid_province = joined.groupby('province')['lat'].count()
+df_population = np.load("Emission Files/pop_grid_wrf_2035.npy")
 
-df_population = pd.read_csv("Population_Projection/Population_Projection_Data/Province/POP_TOTAL.csv")
-df_population = df_population.dropna()
-df_population = df_population[df_population["V2"] == "_SSPFer2_SSPMigr3"]
+joined['Population Per Cell'] = df_population.flatten()
 
-drop_cols = []
-for col in df_population.columns:
-    if (col != "V1" and col != "2035"):
-        drop_cols.append(col)
-        
-df_population.drop(drop_cols, axis = 1, inplace = True)
-df_population = df_population.set_index("V1")
-
-joined["Province Population"] = joined["province"].apply(lambda x: df_population.loc[province_dict[x]]["2035"] if pd.notna(x) else 0)
-joined["Population Per Cell"] = joined[["province", "Province Population"]].apply(
-    lambda x: x[1] / amount_grid_province.loc[x[0]] if pd.notna(x[0]) else 0, axis=1
-)
-
+joined = joined[in_china_flat]
+joined['lon'] = lon_flat[in_china_flat]
+joined['lat'] = lat_flat[in_china_flat]
+    
 region_colors = {
     'BTHS': 'red',
     'FWP': 'orange',
@@ -125,14 +109,15 @@ region_colors = {
 }
 
 for file in nc_files:
+    print(f"Processing: {file.stem}")
     ds = xr.open_dataset(file)
     
-    pm25_data = ds["pred_PM25"].mean(dim="time").values.flatten()[in_china_flat]
+    pm25_data = ds["pred_PM25"].mean(dim = "time").values.flatten()[in_china_flat]
     joined["pm25"] = pm25_data
 
-    plot_df = joined.dropna(subset=['province']).copy()
+    plot_df = joined.dropna(subset = ['province']).copy()
 
-    plot_df = plot_df.sort_values('pm25').reset_index(drop=True)
+    plot_df = plot_df.sort_values('pm25').reset_index(drop = True)
 
     plot_df['cum_pop'] = plot_df['Population Per Cell'].cumsum()
     plot_df['cum_pop_frac'] = plot_df['cum_pop'] / plot_df['Population Per Cell'].sum() * 100
@@ -140,36 +125,47 @@ for file in nc_files:
     total_pop = plot_df['Population Per Cell'].sum()
     plot_df['bar_width'] = plot_df['Population Per Cell'] / total_pop * 100
     
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.fill_between(plot_df['cum_pop_frac'], plot_df['pm25'], color='#D3D3D3', step='post')
+    fig, ax = plt.subplots(figsize = (10, 6))
 
-    region_df = plot_df[plot_df['region'] != 'Other']
-    ax.bar(region_df['cum_pop_frac'], region_df['pm25'], color=region_df['region'].map(region_colors), 
-           width=region_df['bar_width'], align='edge', linewidth=0)
+    plot_df['pop_start'] = plot_df['cum_pop_frac'] - plot_df['bar_width']
+    
+    for i in range(len(plot_df) - 1):
+        x_start = plot_df['pop_start'].iloc[i]
+        x_end = plot_df['pop_start'].iloc[i + 1]
+        color = region_colors[plot_df['region'].iloc[i]]
+        ax.fill_between([x_start, x_end], [plot_df['pm25'].iloc[i], plot_df['pm25'].iloc[i + 1]], color = color, alpha = 0.8)
+        
+    ax.fill_between([plot_df['pop_start'].iloc[-1], 100], [plot_df['pm25'].iloc[-1], plot_df['pm25'].iloc[-1]],
+                    color = region_colors[plot_df['region'].iloc[-1]], alpha = 0.8)
 
-    ax.plot(plot_df['cum_pop_frac'], plot_df['pm25'], color='black', linewidth=0.5)
+    ax.plot(plot_df['pop_start'], plot_df['pm25'], color = 'black', linewidth = 0.8)
+    ax.plot([plot_df.iloc[-1]['pop_start'], 100], [plot_df.iloc[-1]['pm25'], plot_df.iloc[-1]['pm25']], 
+            color = 'black', linewidth = 0.8)
 
-    ax.axhline(25, linestyle='--', color='gray', label='25 μg/m³')
-
+    ax.axhline(25, linestyle = '--', color = 'gray', label = '25 μg/m³')
     ax.set_xlabel('Population Fraction (%)')
     ax.set_ylabel('PM2.5 Exposure (μg/m³)')
     ax.set_xlim(0, 100)
     ax.set_ylim(0)
-
+    
     legend_elements = [
-        Patch(facecolor='red', label='Beijing-Tianjin-Hebei and Surroundings'),
-        Patch(facecolor='orange', label='Fenwei Plain'),
-        Patch(facecolor='green', label='Yangtze River Delta'),
-        Patch(facecolor='purple', label='Sichuan Basin'),
-        Patch(facecolor='blue', label='Pearl River Delta'),
-        Patch(facecolor='#D3D3D3', label='Other'),
+        Patch(facecolor = 'red', label = 'Beijing-Tianjin-Hebei and Surroundings'),
+        Patch(facecolor = 'orange', label = 'Fenwei Plain'),
+        Patch(facecolor = 'green', label = 'Yangtze River Delta'),
+        Patch(facecolor = 'purple', label = 'Sichuan Basin'),
+        Patch(facecolor = 'blue', label = 'Pearl River Delta'),
+        Patch(facecolor = '#D3D3D3', label = 'Other'),
     ]
 
-    ax.legend(handles=legend_elements, loc='upper left')
+    ax.legend(handles = legend_elements, loc = 'upper left')
+    
+    scenario = file.stem.split("_")[1]
+    met_year = file.stem.split("_")[2].split("Met")[0]
 
-    plt.title(f"PM2.5 Population Exposure for Scenario {file.stem}")
+    plt.title(f"PM2.5 Population Exposure for {scenario} - {met_year} | 2020 - 2035")
     plt.tight_layout()
-    plt.savefig(f"Emission Files/40 Scenario Concentration Maps/{file.stem}_exposure_curve.png", dpi=300)
+    plt.savefig(f"Emission Files/40 Scenario Concentration Maps/{scenario}_{met_year}_exposure_curve_2020-2035.png", dpi = 300)
+    plt.close()
     
 print("Finished!")
     
