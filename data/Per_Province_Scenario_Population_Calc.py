@@ -38,8 +38,8 @@ with rasterio.open(TIF_PATH) as src:
  
             row_start = max(0, row_start)
             col_start = max(0, col_start)
-            row_stop  = min(src.height, row_stop)
-            col_stop  = min(src.width,  col_stop)
+            row_stop = min(src.height, row_stop)
+            col_stop = min(src.width,  col_stop)
  
             if row_stop <= row_start or col_stop <= col_start:
                 continue

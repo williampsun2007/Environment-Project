@@ -3,7 +3,6 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from cnmaps import get_adm_maps
 import geopandas as gpd
-import pandas as pd
 from shapely.geometry import Point
 import shapely
 from matplotlib.patches import Patch
@@ -62,7 +61,7 @@ province_dict = {
     "新疆维吾尔自治区": "Xinjiang"
 }
 
-path_nc_files = Path("NC Files and Emission Reports - 2020 to 2035")
+path_nc_files = Path("NC Files and Emission Reports - 2020 to 2030")
 nc_files = sorted(path_nc_files.glob("*.nc"))
 
 records = []
@@ -91,7 +90,7 @@ joined = gpd.sjoin(points_gdf, province_map, how = 'left', predicate = 'within')
 joined = joined[['province']]
 joined['region'] = joined['province'].map(province_to_region).fillna('Other')
 
-df_population = np.load("Emission Files/pop_grid_wrf_2035.npy")
+df_population = np.load("Emission Files/pop_grid_wrf_2030.npy")
 
 joined['Population Per Cell'] = df_population.flatten()
 
@@ -142,7 +141,7 @@ for file in nc_files:
     ax.plot([plot_df.iloc[-1]['pop_start'], 100], [plot_df.iloc[-1]['pm25'], plot_df.iloc[-1]['pm25']], 
             color = 'black', linewidth = 0.8)
 
-    ax.axhline(25, linestyle = '--', color = 'gray', label = '25 μg/m³')
+    ax.axhline(30, linestyle = '--', color = 'gray', label = '30 μg/m³')
     ax.set_xlabel('Population Fraction (%)')
     ax.set_ylabel('PM2.5 Exposure (μg/m³)')
     ax.set_xlim(0, 100)
@@ -159,12 +158,12 @@ for file in nc_files:
 
     ax.legend(handles = legend_elements, loc = 'upper left')
     
-    scenario = file.stem.split("_")[1]
-    met_year = file.stem.split("_")[2].split("Met")[0]
+    scenario = file.stem.split("_")[0].split("-2030-")[1]
+    met_year = file.stem.split("_")[1].split("Met")[0]
 
-    plt.title(f"PM2.5 Population Exposure for {scenario} - {met_year} | 2020 - 2035")
+    plt.title(f"PM2.5 Population Exposure for {scenario} - {met_year} | 2020 - 2030")
     plt.tight_layout()
-    plt.savefig(f"Emission Files/40 Scenario Concentration Maps/{scenario}_{met_year}_exposure_curve_2020-2035.png", dpi = 300)
+    plt.savefig(f"Emission Files/40 Scenario Concentration Maps/{scenario}_{met_year}_exposure_curve_2020-2030.png", dpi = 300)
     plt.close()
     
 print("Finished!")

@@ -42,7 +42,7 @@ for scenario_path in [baseline_path, clean_air_path, otpca_path, otpnzca_path, e
         
     for industry in ["Power", "Industry", "Transportation", "Residential", "Agriculture"]:
         axes[count].plot(x, data[industry], department_colors[industry], 
-                                linestyle='--', marker='o', markerfacecolor='white', markeredgecolor='black', markeredgewidth=1.5)
+                                linestyle = '--', marker = 'o', markerfacecolor = 'white', markeredgecolor = 'black', markeredgewidth = 1.5)
     axes[count].set_xticks([1, 2, 3, 4, 5, 6, 7, 8, 9])
     axes[count].set_xticklabels([2020, 2025, 2030, 2035, 2040, 2045, 2050, 2055, 2060], rotation = 45)
     count += 1
