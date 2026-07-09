@@ -34,9 +34,9 @@ for i, pollutant in enumerate(["SO2", "NOx", "VOC", "NH3", "PM2.5", "PM10", "BC"
 for i in range(5):
     axes[7][i].set_xlabel("Year")
     
-handles = [mpatches.Patch(color=color, label=dept) for dept, color in department_colors.items()]
-fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.02), ncol=len(department_colors))
+handles = [mpatches.Patch(color = color, label = dept) for dept, color in department_colors.items()]
+fig.legend(handles = handles, loc = "lower center", bbox_to_anchor = (0.5, -0.02), ncol = len(department_colors))
 
 plt.tight_layout()
-plt.savefig("Emission Files/Stacked_Bar_Chart.png", bbox_inches="tight")
+plt.savefig("Emission Files/Stacked_Bar_Chart.png", bbox_inches = "tight")
 plt.show()
