@@ -122,7 +122,7 @@ for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
             
             ax[index][index_2].text(0.5, 0.02, f"2020: {total_2020/1000:.0f}K  |  2035: {total_2035/1000:.0f}K", 
                                     transform = ax[index][index_2].transAxes, fontsize = 12, ha = 'center', va = 'bottom', 
-                                    bbox = dict(boxstyle='round,pad=0.2', fc = 'white', alpha = 0.7))
+                                    bbox = dict(boxstyle = 'round,pad=0.2', fc = 'white', alpha = 0.7))
             
     plt.subplots_adjust(hspace = 0.1, wspace = 0.05)
     

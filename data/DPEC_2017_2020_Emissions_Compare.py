@@ -1,8 +1,6 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import numpy as np
 import pandas as pd
-from pathlib import Path
 
 scenarios = ["baseline", "cleanair", "otpca", "otpnzca", "epnzca"]
 pollutants = ["NH3", "NOx", "PM25", "SO2", "VOC"]

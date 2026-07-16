@@ -9,7 +9,7 @@ import geopandas as gpd
 import shapely
 import cartopy.feature as cfeature
 
-pop_grid_2035 = np.load("Emission Files/pop_grid_wrf_2035.npy")
+pop_grid_2020 = np.load("Emission Files/pop_grid_wrf_2020.npy")
 
 world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
 china = world[world['NAME'] == 'China']
@@ -22,8 +22,8 @@ lat_flat = ds["lat"].values.flatten()
 in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
 in_china = in_china_flat.reshape(ds["lon"].shape)
 
-pop_grid_2035[pop_grid_2035 == 0] = 1
-pop_grid_2035[~in_china] = np.nan
+pop_grid_2020[pop_grid_2020 == 0] = 1
+pop_grid_2020[~in_china] = np.nan
 
 provinces = cfeature.NaturalEarthFeature(
     category = 'cultural',
@@ -32,9 +32,32 @@ provinces = cfeature.NaturalEarthFeature(
     facecolor = 'none'
 )
 
-nc_files = sorted(Path("NC Files and Emission Reports - 2017 to 2035").glob("*.nc"))
+nc_files = list(Path("Scenario Percentage Decrease Downloads/Batch1, 7-2-2026").glob("*.nc"))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch2, 7-3-2026").glob("*.nc")))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch3, 7-4-2026").glob("*.nc")))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch4, 7-5-2026").glob("*.nc")))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch5, 7-6-2026").glob("*.nc")))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch6, 7-7-2026").glob("*.nc")))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch7, 7-8-2026").glob("*.nc")))
+nc_files.extend(list(Path("Scenario Percentage Decrease Downloads/Batch8, 7-9-2026").glob("*.nc")))
+nc_files = sorted(nc_files)
+
+dictionary = {}
 for file in nc_files:
+    parts = file.stem.split("_")
+    pollutant = parts[1]
+    pct_reduction = parts[2].split("pct")[0]
+    
+    scenario = f"{pollutant}_{pct_reduction}"
+    if dictionary.get(scenario) is None:
+        dictionary[scenario] = []
+        
     pm25 = xr.open_dataset(file)["pred_PM25"].mean(dim = "time").values
+    
+    dictionary[scenario].append(pm25)
+
+for scenario, values in dictionary.items():
+    pm25 = np.mean(values, axis = 0)
     
     fig = plt.figure(figsize = (18, 10))
     ax = fig.add_axes([0.05, 0.05, 0.75, 0.9], projection = ccrs.PlateCarree())
@@ -47,8 +70,8 @@ for file in nc_files:
     cmap_red.set_bad(alpha = 0)
     norm_red = PowerNorm(gamma = 0.5, vmin = 1, vmax = 5_000_000)
 
-    below_25_pop = np.where((pm25 < 25) & in_china, pop_grid_2035, np.nan)
-    above_25_pop = np.where((pm25 >= 25) & in_china, pop_grid_2035, np.nan)
+    below_25_pop = np.where((pm25 < 25) & in_china, pop_grid_2020, np.nan)
+    above_25_pop = np.where((pm25 >= 25) & in_china, pop_grid_2020, np.nan)
 
     im_gray = ax.pcolormesh(ds["lon"].values, ds["lat"].values, below_25_pop, cmap = cmap_gray, norm = norm_gray)
     im_red = ax.pcolormesh(ds["lon"].values, ds["lat"].values, above_25_pop, cmap = cmap_red, norm = norm_red)
@@ -66,19 +89,19 @@ for file in nc_files:
     ax.add_feature(cfeature.BORDERS)
     ax.add_feature(provinces, edgecolor = 'black', linewidth = 0.5)
     
-    parts = file.stem.split("-2035-")
-    scenario = parts[1].split("-2017-")[0]
-    year = parts[1].split("-2017-")[1].split("_")[0]
+    parts = scenario.split("_")
+    pollutant = parts[0]
+    pct_reduction = parts[1]
     
     ax.set_title(
-        f"China Population Distribution by PM2.5 Exposure (2035)\n"
+        f"China Population Distribution by PM2.5 Exposure (2020 Pop.)\n"
         f"Gray: < 25 µg/m³ | Red: ≥ 25 µg/m³ | Color Intensity = Population Density\n"
-        f"Scenario: {scenario} | Met Year: {year}",
+        f"Pollutant: {pollutant} | Percent Reduction: {pct_reduction}%",
         fontsize = 10
     )
     
     plt.tight_layout(rect = [0, 0, 0.85, 0.95])
-    plt.savefig(f"Emission Files/2017-2035 Scenario Threshold Pop. Maps/{scenario}_{year}.png")
+    plt.savefig(f"Emission Files/Percentage Reduction Sensitivity Figures/Maps/{pollutant}_{pct_reduction}_map.png")
     plt.close()
     
 print("Finished!")
