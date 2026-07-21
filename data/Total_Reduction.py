@@ -1,3 +1,9 @@
+'''
+For each pollutant, computes and prints the total 2020->2035
+emission reduction, the total increase (cells that went up), and the
+increase as a % of the reduction — for the baseline scenario.
+'''
+
 import openpyxl
 
 wb_2020 = openpyxl.load_workbook("baseline/baseline_2020_Emission.xlsx")

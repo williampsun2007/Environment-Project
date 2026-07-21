@@ -1,3 +1,10 @@
+'''
+Builds an interactive 5x5 Plotly grid (pollutant x scenario) of bar
+charts comparing DPEC/2017-base/2020-base emissions with a 2030
+marker overlay, with a province dropdown to swap which region's data
+is shown, and saves it as a standalone HTML file.
+'''
+
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd

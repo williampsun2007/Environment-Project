@@ -1,3 +1,10 @@
+'''
+For each pollutant, renders a 6-panel choropleth of Chinese provinces
+showing % emission change vs. 2020 (2030/2035 under two scenarios,
+each vs. 2017 and vs. 2020 baselines), with national totals labeled,
+and saves each figure as a PNG.
+'''
+
 import cartopy.crs as ccrs
 import openpyxl
 import matplotlib.pyplot as plt

@@ -1,3 +1,10 @@
+'''
+Computes 2017->2030 % emission reduction per pollutant/sector/region,
+then reshapes those values into the control-plan template (clamping
+invalid/negative entries to 0) and saves one scenario file per
+weather year (2017-2024).
+'''
+
 import openpyxl
 
 wb_2017 = openpyxl.load_workbook("2017_Base_Data/emission_report.xlsx")

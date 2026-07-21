@@ -1,3 +1,9 @@
+'''
+Combines PM2.5/PM10/BC/OC % reduction and raw 2020/2035 values by
+province+sector into one comparison sheet, flagging rows red where
+PM and BC/OC reduction trends disagree in sign, and saves the result.
+'''
+
 import openpyxl
 from openpyxl.styles import Font
 
@@ -6,7 +12,7 @@ wb_raw = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_Raw.xls
 
 region_sector_reduction = {}
 
-red_font = Font(color="FF0000", bold=True)  # Uses hex color code
+red_font = Font(color = "FF0000", bold = True)  # Uses hex color code
 
 for sheet_name in ['PM2.5', 'PM10', 'BC', 'OC']:
     ws = wb[sheet_name]

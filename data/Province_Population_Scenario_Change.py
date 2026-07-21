@@ -1,3 +1,9 @@
+'''
+For each of the 15 fertility x migration scenarios, computes 2020->
+2035 population % change per province and plots a choropleth map,
+saving one PNG per scenario.
+'''
+
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm

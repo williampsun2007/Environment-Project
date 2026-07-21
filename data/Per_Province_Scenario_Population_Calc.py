@@ -1,3 +1,10 @@
+'''
+Regrids a 1km population raster onto the WRF model grid, then for
+each scenario's PM2.5 output computes the % of population exposed to
+PM2.5 >= 25 ug/m3 nationally and per-province (via high-res
+rasterization), saving results to Excel/.npy files.
+'''
+
 import rasterio
 import rasterio.windows
 import netCDF4 as nc

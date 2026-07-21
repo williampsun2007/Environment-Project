@@ -1,3 +1,9 @@
+'''
+Builds an 8x5 grid of stacked bar charts (pollutant x scenario)
+showing sector emission breakdown by year, and saves the combined
+figure as one PNG.
+'''
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

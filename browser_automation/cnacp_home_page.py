@@ -1,3 +1,8 @@
+'''
+Page object for the CNCAP home/menu screen: hovers the main menu and
+clicks through to the Online Simulation page.
+'''
+
 from playwright.sync_api import Page
 
 class HomePage:

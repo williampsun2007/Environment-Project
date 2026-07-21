@@ -1,3 +1,10 @@
+'''
+For each specified subset of pollutants, builds a control-plan
+workbook with just those pollutants' 2020->2035 % reductions
+(clamping invalid/negative values to 0), encodes the subset as a
+binary code, and saves one file per combination per weather year.
+'''
+
 import openpyxl
 
 groups = [["SO2"], ["NOX"], ["NH3"], ["VOC"], ["PM2.5"],

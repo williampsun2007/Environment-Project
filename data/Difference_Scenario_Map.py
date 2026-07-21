@@ -1,3 +1,9 @@
+'''
+Loads PM2.5 model output for two scenarios (on-time-peak vs.
+early-peak-net-zero, 2024 met year), masks to China, and plots the
+spatial difference in mean PM2.5 concentration between them as a map.
+'''
+
 import xarray as xr
 import geopandas as gpd
 import shapely

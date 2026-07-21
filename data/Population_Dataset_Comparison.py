@@ -1,3 +1,10 @@
+'''
+Builds an interactive Plotly chart comparing population projection
+ranges/means across three datasets (1km, 100m, province-resolution)
+per province, with min/max shaded bands and a province dropdown, and
+saves it as a standalone HTML file.
+'''
+
 import pandas as pd
 import plotly.graph_objects as go
 

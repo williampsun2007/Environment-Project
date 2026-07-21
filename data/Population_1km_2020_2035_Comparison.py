@@ -1,3 +1,9 @@
+'''
+Loads 1km-resolution 2020/2035 population rasters for the SSP5
+scenario, sums each by province, and plots a choropleth of absolute
+population change per province, saving the figure.
+'''
+
 import geopandas as gpd
 from cnmaps import get_adm_maps
 import numpy as np

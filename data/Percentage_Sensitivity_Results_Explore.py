@@ -1,3 +1,10 @@
+'''
+For each single-pollutant reduction scenario (e.g. SO2 cut by
+10-100%), computes the % of China's 2020 population exposed to
+PM2.5 >= 25 ug/m3, then plots that sensitivity curve per pollutant
+and saves the figure.
+'''
+
 from pathlib import Path
 import zipfile
 import netCDF4 as nc

@@ -1,3 +1,10 @@
+'''
+Automates CNCAP simulation submissions: for each batch folder under
+APP_FILE_PATH, logs into the site, creates a task per Excel file and
+uploads it, then downloads the results as .zip files. Waits 15 min
+between batches; skips to the next batch if one fails.
+'''
+
 from playwright.sync_api import Playwright
 from cnacp_login_page import LoginPage
 from cnacp_home_page import HomePage
@@ -61,7 +68,7 @@ def test_run(playwright: Playwright) -> None:
             #Loop through the excel files and upload each one using the file chooser
             for file_path in excel_files:
                 #Create a new task, fill in the task name, select the year, click through the steps to get to the batch upload page
-                parts = file_path.stem.split("_")
+                parts = file_path.stem.split("-")
                 task_name = parts[0]
                 year_1 = parts[1]
                 year_2 = parts[2]
@@ -72,7 +79,7 @@ def test_run(playwright: Playwright) -> None:
 
             #After uploading all the files, loop through the tasks and download the results for each one, save the results to a specified folder
             for file_path in excel_files:
-                parts = file_path.stem.split("_")
+                parts = file_path.stem.split("-")
                 task_name = parts[0]
 
                 #Use pathlib to construct the download path for each task, and move the downloaded file to the specified folder
@@ -85,7 +92,7 @@ def test_run(playwright: Playwright) -> None:
             browser.close()
 
             if i + 1 < len(batch_folders):
-                time.sleep(3600)
+                time.sleep(900)
         except Exception as e:
             if context:
                 context.close()

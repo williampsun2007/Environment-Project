@@ -1,3 +1,9 @@
+'''
+For each pollutant, computes the % reduction in emissions from 2017
+to 2020 by sector/region and writes the result as a sheet in the
+comparison workbook.
+'''
+
 import pandas as pd
 
 with pd.ExcelWriter("Emission Files/2017_2020_Emission_Comparison.xlsx", mode = 'a', if_sheet_exists = 'replace') as writer:

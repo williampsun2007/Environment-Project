@@ -1,3 +1,10 @@
+'''
+Builds an interactive Plotly chart comparing population projections
+(1km-resolution SSP scenarios and province-resolution fertility x
+migration scenarios) against actual census figures, with a per-
+province dropdown, and saves it as a standalone HTML file.
+'''
+
 import pandas as pd
 import plotly.graph_objects as go
 

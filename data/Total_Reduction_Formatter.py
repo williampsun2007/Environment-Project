@@ -1,3 +1,9 @@
+'''
+For each pollutant, sums the total 2020->2035 emission reduction and
+separately the total increase (cells that went up), then appends the
+scenario's totals and increase-as-%-of-reduction to a summary sheet.
+'''
+
 import openpyxl
 
 wb_2020 = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_Emission.xlsx")

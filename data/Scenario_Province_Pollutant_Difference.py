@@ -1,3 +1,10 @@
+'''
+For each pollutant, renders a 5x5 choropleth grid (sector x
+scenario) of Chinese provinces showing absolute 2020->2035 emission
+change, with national sector totals labeled, and saves each figure
+as a PNG.
+'''
+
 import cartopy.crs as ccrs
 import openpyxl
 import matplotlib.pyplot as plt

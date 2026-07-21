@@ -1,3 +1,10 @@
+'''
+Extracts PM25.nc from each downloaded scenario zip, computes the %
+of Chinese grid cells with PM2.5 >= 25 ug/m3 for the annual mean and
+every day of the year, and saves one sheet per scenario/met-year to
+a workbook.
+'''
+
 import xarray as xr
 import geopandas as gpd
 import shapely

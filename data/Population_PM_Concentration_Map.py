@@ -1,3 +1,10 @@
+'''
+For each pollutant/reduction-percent scenario, averages PM2.5 output
+across multiple download batches, then maps 2020 population colored
+gray (<25 ug/m3) or red (>=25 ug/m3) by exposure, saving one PNG map
+per scenario.
+'''
+
 import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt

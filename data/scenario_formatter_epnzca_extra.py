@@ -1,3 +1,10 @@
+'''
+For each province+pollutant pair, applies an extra 10% cut to that
+one province's 2035 value on top of the baseline scenario, recomputes
+% reduction from 2020 for every cell, and saves one control-plan
+workbook per province/pollutant combination.
+'''
+
 import openpyxl
 
 wb_2020 = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_Emission.xlsx")

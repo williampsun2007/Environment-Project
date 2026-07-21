@@ -1,3 +1,10 @@
+'''
+For each pollutant, renders a 6-panel choropleth of Chinese provinces
+showing absolute emission totals (baseline 2030/2035, plus 2030/2035
+under two other scenarios vs. 2017 and vs. 2020), with national
+totals labeled, and saves each figure as a PNG.
+'''
+
 import cartopy.crs as ccrs
 import openpyxl
 import matplotlib.pyplot as plt
@@ -6,14 +13,14 @@ from cnmaps import get_adm_maps
 import geopandas as gpd
 from matplotlib.colors import Normalize
 
-wb_baseline_2030 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\baseline\baseline_2030_Emission.xlsx")
-wb_baseline_2035 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\baseline\baseline_2035_Emission.xlsx")
+wb_baseline_2030 = openpyxl.load_workbook("baseline/baseline_2030_Emission.xlsx")
+wb_baseline_2035 = openpyxl.load_workbook("baseline/baseline_2035_Emission.xlsx")
 
-wb_2017_2030 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\Emission Files\emission_report - 2017 to 2030.xlsx")
-wb_2017_2035 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\Emission Files\emission_report - 2017 to 2035.xlsx")
+wb_2017_2030 = openpyxl.load_workbook("Emission Files/emission_report - 2017 to 2030.xlsx")
+wb_2017_2035 = openpyxl.load_workbook("Emission Files/emission_report - 2017 to 2035.xlsx")
 
-wb_2020_2030 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\Emission Files\emission_report - 2020 to 2030.xlsx")
-wb_2020_2035 = openpyxl.load_workbook(r"C:\Users\sunyi\Environment_Project\Emission Files\emission_report - 2020 to 2035.xlsx")
+wb_2020_2030 = openpyxl.load_workbook("Emission Files/emission_report - 2020 to 2030.xlsx")
+wb_2020_2035 = openpyxl.load_workbook("Emission Files/emission_report - 2020 to 2035.xlsx")
 
 province_arr = ["Beijing", "Tianjin", "Hebei", "Shanxi", "Inner Mongolia", "Liaoning", "Jilin", "Heilongjiang", "Shanghai", 
                 "Jiangsu", "Zhejiang", "Anhui", "Fujian", "Jiangxi", "Shandong", "Henan", "Hubei", "Hunan", "Guangdong", 
@@ -222,7 +229,7 @@ for pollutant in ["SO2", "NOx", "VOC", "NH3", "PM25"]:
     cbar.set_ticklabels(pollutant_ticklabels[pollutant])
 
     fig.suptitle(f'Emission Amounts for {pollutant}', fontsize = 18, fontweight = 'bold')
-    plt.savefig(f"C:/Users/sunyi/Environment_Project/Emission Files/Absolute Emissions Per Province/{pollutant}_Map.png")
+    plt.savefig(f"Emission Files/Absolute Emissions Per Province/{pollutant}_Map.png")
     plt.close(fig)
     
 print("Finished!")

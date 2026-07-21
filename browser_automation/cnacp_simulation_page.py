@@ -1,4 +1,11 @@
+'''
+Page object for the CNCAP "Online Simulation" screen: creates a new
+task with a name/year range, uploads an Excel input via the file
+chooser, and downloads the results once a task finishes processing.
+'''
+
 from playwright.sync_api import Page
+import time
 
 class OnlineSimulationPage:
     #Initialize the page object and define locators for the elements on the page
@@ -47,6 +54,7 @@ class OnlineSimulationPage:
         download_button = row.locator("button.download")
         download_button.wait_for(state="visible", timeout=0)
 
+        time.sleep(2)
         with self.page.expect_download(timeout=0) as download_info:
             download_button.click()
 

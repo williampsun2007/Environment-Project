@@ -1,3 +1,9 @@
+'''
+For 2030 and 2035, computes the 2020-population-weighted mean PM2.5
+for each of the 5 scenarios under both 2017 and 2020 baselines, then
+plots grouped bar charts comparing them and saves each figure.
+'''
+
 from pathlib import Path
 import matplotlib.pyplot as plt
 import netCDF4 as nc

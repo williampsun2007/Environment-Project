@@ -1,3 +1,9 @@
+'''
+For every combination of 3 distinct sectors, builds a control-plan
+workbook with just those sectors' 2020->2035 % reductions (clamping
+invalid/negative values to 0) and saves one file per combination.
+'''
+
 import openpyxl
 
 sectors = ["电力", "工业", "交通", "民用", "农业"]

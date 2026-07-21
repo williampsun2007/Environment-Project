@@ -1,3 +1,10 @@
+'''
+For each province and population scenario (5 SSP variants and 15
+fertility x migration variants), computes the average % difference
+between projected and actual 2015-2024 population, and saves the
+comparison table to a workbook.
+'''
+
 import pandas as pd
 import openpyxl
 

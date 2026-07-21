@@ -1,3 +1,10 @@
+'''
+For each pollutant sheet, converts raw sector emissions (Power,
+Industry, Transportation, Residential, Agriculture) by province into
+% share of total for 2020 and 2035, highlighting shares >= 50% in
+red, and saves the reformatted workbook.
+'''
+
 import openpyxl
 from openpyxl.styles import Font
 

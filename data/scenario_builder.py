@@ -1,3 +1,10 @@
+'''
+Uses Sobol sampling to generate 128 scenarios of per-pollutant
+reduction percentages, applies each uniformly across all
+province/department/pollutant combinations, and saves one control-
+plan workbook per scenario.
+'''
+
 from scipy.stats.qmc import Sobol
 from itertools import product
 import openpyxl

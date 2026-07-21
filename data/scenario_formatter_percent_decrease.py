@@ -1,3 +1,10 @@
+'''
+For each pollutant and reduction percent (10-100%), builds a
+control-plan workbook applying that flat reduction uniformly across
+all province/department rows, and saves one file per weather year
+(2017-2024).
+'''
+
 import openpyxl
 
 wb = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_change_percentage.xlsx")

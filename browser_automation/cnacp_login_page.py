@@ -1,3 +1,8 @@
+'''
+Page object for the CNCAP login screen: navigates to the login form,
+fills in username/password, and submits/confirms the login.
+'''
+
 from playwright.sync_api import Page
 
 class LoginPage:

@@ -1,3 +1,9 @@
+'''
+Builds an interactive Plotly chart of population projections under
+the 5 SSP scenarios (1km-resolution dataset), with a per-province
+dropdown, and saves it as a standalone HTML file.
+'''
+
 import pandas as pd
 import plotly.graph_objects as go
 

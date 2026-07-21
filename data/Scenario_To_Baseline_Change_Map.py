@@ -1,3 +1,10 @@
+'''
+For each meteorological year (2017-2024), computes the PM2.5
+difference between the baseline scenario and each of the other 4
+scenarios (masked to China), plots the 4 difference maps in a 2x2
+grid, and saves one figure per met year.
+'''
+
 import xarray as xr
 import geopandas as gpd
 import netCDF4 as nc

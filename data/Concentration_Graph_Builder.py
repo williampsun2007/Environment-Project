@@ -1,3 +1,10 @@
+'''
+Maps each model grid cell to a province/region cluster and population
+count, then for every PM2.5 NetCDF file builds a population-weighted
+exposure curve (cumulative population % vs. PM2.5 level, colored by
+region) and saves it as a PNG per scenario/met-year.
+'''
+
 import xarray as xr
 from pathlib import Path
 import matplotlib.pyplot as plt

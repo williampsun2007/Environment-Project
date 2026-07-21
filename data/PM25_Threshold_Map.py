@@ -1,3 +1,8 @@
+'''
+Loads 2020 baseline PM2.5 data, masks to China, and plots a red/blue
+map flagging grid cells at or above 35 ug/m3 vs. below it.
+'''
+
 import xarray as xr
 import geopandas as gpd
 import shapely

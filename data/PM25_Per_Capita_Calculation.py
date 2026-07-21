@@ -1,3 +1,9 @@
+'''
+For each of the 5 scenarios, merges province population projections
+with PM2.5 emission totals for 2020/2035 and computes per-capita
+emissions, saving one workbook per scenario.
+'''
+
 import pandas as pd
 
 df = pd.read_csv("Population_Projection/Population_Projection_Data/Province/Pop_TOTAL.csv")

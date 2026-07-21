@@ -1,3 +1,10 @@
+'''
+For 5 emission scenarios, sums CO2 by sector (Power, Industry,
+Transportation, Residential, Agriculture) across years (2020-2060)
+from each scenario's workbooks, then plots one line-chart panel per
+scenario and saves the combined figure
+'''
+
 import openpyxl
 import matplotlib.pyplot as plt
 from pathlib import Path

@@ -1,3 +1,10 @@
+'''
+Reshapes 2020->2035 % emission reduction values (from the EPNZCA
+scenario, clamping invalid/negative entries to 0) into the
+control-plan template, then saves one copy per weather year
+(2017-2024).
+'''
+
 import openpyxl
 
 wb = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_change_percentage.xlsx")
