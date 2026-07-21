@@ -61,12 +61,14 @@ APP_FILE_PATH=<folder of batch subfolders containing Excel files to upload>
 APP_DOWNLOAD_PATH=<folder to save downloaded result .zip files>
 ```
 
+Note: after installing dependencies, run `playwright install chromium` once — Playwright needs to download its browser binary separately.
+
 ## Usage
 
 Run the batch uploader directly:
 
 ```bash
-python <batch_runner_script>.py
+python browser_automation/run_batch_automation.py
 ```
 
 It will process every subfolder under `APP_FILE_PATH` as a batch, uploading each `.xlsx` file as a task and downloading results once done, waiting an hour between batches.
