@@ -15,7 +15,7 @@ import os
 import sys
 import time
 
-def test_run(playwright: Playwright) -> None:
+def run(playwright: Playwright) -> None:
     print("SCRIPT STARTED")
 
     if getattr(sys, 'frozen', False):
@@ -108,4 +108,4 @@ if __name__ == "__main__":
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as playwright:
-        test_run(playwright)
+        run(playwright)

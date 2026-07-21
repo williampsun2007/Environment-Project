@@ -137,14 +137,11 @@ def get_china_geometry():
     return world[world['NAME'] == 'China'].geometry.iloc[0]
  
  
-def build_in_china_mask(lon, lat):
+def build_in_china_mask(lon, lat, china_geom = None):
     '''
     Given 2D lon/lat arrays (matching a model grid's shape), returns a
     boolean array of the same shape that's True where the grid cell's
-    center falls within China's national boundary. If you're calling
-    this in a loop (e.g. once per file), fetch china_geom = get_china_geometry()
-    once beforehand and pass it in, to avoid re-fetching the boundary
-    data on every call.
+    center falls within China's national boundary.
     '''
     if china_geom is None:
         china_geom = get_china_geometry()
@@ -152,3 +149,4 @@ def build_in_china_mask(lon, lat):
     lat_flat = lat.flatten()
     in_china_flat = shapely.contains_xy(china_geom, lon_flat, lat_flat)
     return in_china_flat.reshape(lon.shape)
+ 

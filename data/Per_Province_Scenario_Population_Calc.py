@@ -11,10 +11,10 @@ import netCDF4 as nc
 import numpy as np
 import xarray as xr
 import geopandas as gpd
-from shapely.vectorized import contains
 from pathlib import Path
 import openpyxl
 from rasterio.features import rasterize
+from common import build_in_china_mask
  
 TIF_PATH = "Population Projection Gridded 2/SSP2RCP4_5/grid_pop_count2035_SSP2_RCP4_5.tif"           
 OUT_PATH = "Emission Files/pop_grid_wrf_2035.npy"                       
@@ -69,15 +69,7 @@ with rasterio.open(TIF_PATH) as src:
             
 np.save(OUT_PATH, pop_grid)
             
-world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
-china = world[world['NAME'] == 'China']
-
-lon_flat = ds["lon"][:].flatten()
-lat_flat = ds["lat"][:].flatten()
-
-in_china_flat = contains(china.geometry.iloc[0], lon_flat, lat_flat)
-
-in_china = in_china_flat.reshape(ds["lon"].shape)
+in_china = build_in_china_mask(ds["lon"][:], ds["lat"][:])
 
 pop_grid_2035 = np.load("Emission Files/pop_grid_wrf_2035.npy")
 pop_china_2035 = pop_grid_2035.copy()

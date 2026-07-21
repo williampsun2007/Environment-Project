@@ -8,25 +8,16 @@ and saves the figure.
 from pathlib import Path
 import zipfile
 import netCDF4 as nc
-import geopandas as gpd
-from shapely.vectorized import contains
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
+from common import build_in_china_mask
 
 dictionary = {}
 
 ds = nc.Dataset("2017_Base_Data/PM25.nc")
 
-world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
-china = world[world['NAME'] == 'China']
-
-lon_flat = ds["lon"][:].flatten()
-lat_flat = ds["lat"][:].flatten()
-
-in_china_flat = contains(china.geometry.iloc[0], lon_flat, lat_flat)
-
-in_china = in_china_flat.reshape(ds["lon"].shape)
+in_china = build_in_china_mask(ds["lon"][:], ds["lat"][:])
 
 pop_grid_2020 = np.load("Emission Files/pop_grid_wrf_2020.npy")
 pop_china_2020 = pop_grid_2020.copy()
