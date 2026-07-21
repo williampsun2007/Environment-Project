@@ -8,12 +8,11 @@ region) and saves it as a PNG per scenario/met-year.
 import xarray as xr
 from pathlib import Path
 import matplotlib.pyplot as plt
-from cnmaps import get_adm_maps
 import geopandas as gpd
 from shapely.geometry import Point
-import shapely
 from matplotlib.patches import Patch
 import numpy as np
+from common import build_in_china_mask, get_province_gdf
 
 province_to_region = {
     '北京市': 'BTHS',
@@ -34,66 +33,23 @@ province_to_region = {
     '广东省': 'PRD',
 }
 
-province_dict = {
-    "北京市": "Beijing",
-    "天津市": "Tianjin",
-    "河北省": "Hebei",
-    "山西省": "Shanxi",
-    "内蒙古自治区": "NeiMonggol",
-    "辽宁省": "Liaoning",
-    "吉林省": "Jilin",
-    "黑龙江省": "Heilongjiang",
-    "上海市": "Shanghai",
-    "江苏省": "Jiangsu",
-    "浙江省": "Zhejiang",
-    "安徽省": "Anhui",
-    "福建省": "Fujian",
-    "江西省": "Jiangxi",
-    "山东省": "Shandong",
-    "河南省": "Henan",
-    "湖北省": "Hubei",
-    "湖南省": "Hunan",
-    "广东省": "Guangdong",
-    "广西壮族自治区": "Guangxi",
-    "海南省": "Hainan",
-    "重庆市": "Chongqing",
-    "四川省": "Sichuan",
-    "贵州省": "Guizhou",
-    "云南省": "Yunan",
-    "西藏自治区": "Xizang",
-    "陕西省": "Shaanxi",
-    "甘肃省": "Gansu",
-    "青海省": "Qinghai",
-    "宁夏回族自治区": "Ningxia",
-    "新疆维吾尔自治区": "Xinjiang"
-}
-
 path_nc_files = Path("NC Files and Emission Reports - 2020 to 2030")
 nc_files = sorted(path_nc_files.glob("*.nc"))
 
-records = []
-for province in get_adm_maps(level = '省'):
-    records.append({
-        'province': province['province'],
-        'geometry': province['geometry']
-    })
-
-province_map = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
+province_gdf = get_province_gdf()
 
 ds = xr.open_dataset(nc_files[0])
 lon_flat = ds["lon"].values.flatten()
 lat_flat = ds["lat"].values.flatten()
 
-world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
-china = world[world['NAME'] == 'China']
-in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
+in_china_flat = build_in_china_mask(ds["lon"].values, ds["lat"].values).flatten()
 
 points_gdf = gpd.GeoDataFrame(
     geometry = [Point(lon, lat) for lon, lat in zip(lon_flat, lat_flat)],
     crs = 'EPSG:4326'
 )
 
-joined = gpd.sjoin(points_gdf, province_map, how = 'left', predicate = 'within')
+joined = gpd.sjoin(points_gdf, province_gdf, how = 'left', predicate = 'within')
 joined = joined[['province']]
 joined['region'] = joined['province'].map(province_to_region).fillna('Other')
 

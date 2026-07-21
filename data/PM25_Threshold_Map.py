@@ -4,26 +4,18 @@ map flagging grid cells at or above 35 ug/m3 vs. below it.
 '''
 
 import xarray as xr
-import geopandas as gpd
-import shapely
 import numpy as np
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+from common import build_in_china_mask
 
 fig = plt.figure(figsize = (15, 12))
 ax = plt.axes(projection = ccrs.PlateCarree())
 
-world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
-china = world[world['NAME'] == 'China']
-
 ds = xr.open_dataset("2020_Base_Data/PM25.nc")
 
-lon_flat = ds["lon"].values.flatten()
-lat_flat = ds["lat"].values.flatten()
-
-in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
-in_china = in_china_flat.reshape(ds["lon"].shape)
+in_china = build_in_china_mask(ds["lon"].values, ds["lat"].values)
 
 data = ds["pred_PM25"].mean(dim = "time").values.copy()
 

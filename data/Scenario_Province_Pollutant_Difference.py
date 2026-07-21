@@ -10,8 +10,7 @@ import openpyxl
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
-from cnmaps import get_adm_maps
-import geopandas as gpd
+from common import PROVINCE_MAP_EMISSIONS, PROVINCE_ARR, EXCLUDED_REGIONS, get_province_gdf
 
 wb_baseline = openpyxl.load_workbook("baseline/2020_2035_Raw.xlsx")
 wb_clean_air = openpyxl.load_workbook("clean_air/2020_2035_Raw.xlsx")
@@ -20,45 +19,6 @@ wb_otpnzca = openpyxl.load_workbook("on-time_peak-net_zero-clean_air/2020_2035_R
 wb_epnzca = openpyxl.load_workbook("early_peak-net_zero-clean_air/2020_2035_Raw.xlsx")
 
 workbook_arr = [wb_baseline, wb_clean_air, wb_otpca, wb_otpnzca, wb_epnzca]
-
-province_arr = ["Beijing", "Tianjin", "Hebei", "Shanxi", "Inner Mongolia", "Liaoning", "Jilin", "Heilongjiang", "Shanghai", 
-                "Jiangsu", "Zhejiang", "Anhui", "Fujian", "Jiangxi", "Shandong", "Henan", "Hubei", "Hunan", "Guangdong", 
-                "Guangxi", "Hainan", "Chongqing", "Sichuan", "Guizhou", "Yunnan", "Tibet", "Shaanxi", "Gansu", "Qinghai",
-                "Ningxia", "Xinjiang"]
-
-province_map = {
-    "北京市": "Beijing",
-    "天津市": "Tianjin",
-    "河北省": "Hebei",
-    "山西省": "Shanxi",
-    "内蒙古自治区": "Inner Mongolia",
-    "辽宁省": "Liaoning",
-    "吉林省": "Jilin",
-    "黑龙江省": "Heilongjiang",
-    "上海市": "Shanghai",
-    "江苏省": "Jiangsu",
-    "浙江省": "Zhejiang",
-    "安徽省": "Anhui",
-    "福建省": "Fujian",
-    "江西省": "Jiangxi",
-    "山东省": "Shandong",
-    "河南省": "Henan",
-    "湖北省": "Hubei",
-    "湖南省": "Hunan",
-    "广东省": "Guangdong",
-    "广西壮族自治区": "Guangxi",
-    "海南省": "Hainan",
-    "重庆市": "Chongqing",
-    "四川省": "Sichuan",
-    "贵州省": "Guizhou",
-    "云南省": "Yunnan",
-    "西藏自治区": "Tibet",
-    "陕西省": "Shaanxi",
-    "甘肃省": "Gansu",
-    "青海省": "Qinghai",
-    "宁夏回族自治区": "Ningxia",
-    "新疆维吾尔自治区": "Xinjiang"
-}
 
 pollutant_norms = {
     "SO2":   mcolors.SymLogNorm(linthresh=10000, vmin=-520000, vmax=200000),
@@ -93,14 +53,7 @@ pollutant_ticklabels = {
     "OC": ['-160K', '-30k', '-10K', '-1K', '0', '+1K', '+10K', '+30K', '+60K']
 }
 
-records = []
-for province in get_adm_maps(level = '省'):
-    records.append({
-        'province': province['province'],
-        'geometry': province['geometry']
-    })
-
-gdf = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
+gdf = get_province_gdf()
 
 for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
     cmap = cm.RdYlGn
@@ -113,9 +66,9 @@ for pollutant in ["SO2", "NOX", "VOC", "NH3", "PM2.5", "PM10", "BC", "OC"]:
             sheet = workbook[pollutant]
             
             def get_color(name):
-                if name in province_map and name not in ["台湾省", "香港特别行政区", "澳门特别行政区"]:
-                    english_name = province_map[name]
-                    province_index = province_arr.index(english_name)
+                if name in PROVINCE_MAP_EMISSIONS and name not in EXCLUDED_REGIONS:
+                    english_name = PROVINCE_MAP_EMISSIONS[name]
+                    province_index = PROVINCE_ARR.index(english_name)
                     difference = sheet.cell(index + 12, province_index + 3).value - sheet.cell(index + 3, province_index + 3).value
                     return cmap(norm(difference))
                        

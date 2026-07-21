@@ -6,11 +6,10 @@ a workbook.
 '''
 
 import xarray as xr
-import geopandas as gpd
-import shapely
 from pathlib import Path
 import zipfile
 import openpyxl
+from common import get_china_geometry, build_in_china_mask
 
 wb = openpyxl.Workbook()
 wb.remove(wb.active)
@@ -19,8 +18,7 @@ file_path = Path("Excel Downloads")
 
 list_zips = file_path.glob("*.zip")
 
-world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
-china = world[world['NAME'] == 'China']
+china_geom = get_china_geometry()
 
 abbrev = {
     "baseline": "base",
@@ -45,11 +43,7 @@ for file_path in list_zips:
                 
     ds = xr.open_dataset(output_path)
     
-    lon_flat = ds["lon"].values.flatten()
-    lat_flat = ds["lat"].values.flatten()
-    
-    in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
-    in_china = in_china_flat.reshape(ds["lon"].shape)
+    in_china = build_in_china_mask(ds["lon"].values, ds["lat"].values, china_geom=china_geom)
     
     day_data = ds["pred_PM25"].mean(dim="time").values
     china_cells = day_data[in_china]

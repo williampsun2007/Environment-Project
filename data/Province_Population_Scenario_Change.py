@@ -8,55 +8,13 @@ import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
-from cnmaps import get_adm_maps
-import geopandas as gpd
 import pandas as pd
+from common import PROVINCE_MAP_POPULATION, EXCLUDED_REGIONS, get_province_gdf
 
 df = pd.read_csv("Population_Projection/Population_Projection_Data/Province/Pop_TOTAL.csv")
 df.dropna(inplace = True)
 
-province_map = {
-    "北京市": "Beijing",
-    "天津市": "Tianjin",
-    "河北省": "Hebei",
-    "山西省": "Shanxi",
-    "内蒙古自治区": "NeiMonggol",
-    "辽宁省": "Liaoning",
-    "吉林省": "Jilin",
-    "黑龙江省": "Heilongjiang",
-    "上海市": "Shanghai",
-    "江苏省": "Jiangsu",
-    "浙江省": "Zhejiang",
-    "安徽省": "Anhui",
-    "福建省": "Fujian",
-    "江西省": "Jiangxi",
-    "山东省": "Shandong",
-    "河南省": "Henan",
-    "湖北省": "Hubei",
-    "湖南省": "Hunan",
-    "广东省": "Guangdong",
-    "广西壮族自治区": "Guangxi",
-    "海南省": "Hainan",
-    "重庆市": "Chongqing",
-    "四川省": "Sichuan",
-    "贵州省": "Guizhou",
-    "云南省": "Yunan",
-    "西藏自治区": "Xizang",
-    "陕西省": "Shaanxi",
-    "甘肃省": "Gansu",
-    "青海省": "Qinghai",
-    "宁夏回族自治区": "Ningxia",
-    "新疆维吾尔自治区": "Xinjiang"
-}
-
-records = []
-for province in get_adm_maps(level = '省'):
-    records.append({
-        'province': province['province'],
-        'geometry': province['geometry']
-    })
-
-gdf = gpd.GeoDataFrame(records, crs = 'EPSG:4326')
+gdf = get_province_gdf()
 
 col_not_2020_2035 = []
 for col in df.columns:
@@ -76,8 +34,8 @@ for fer in range(1, 6):
         cmap = cm.RdYlGn
         
         def get_color(name):
-            if name in province_map and name not in ["台湾省", "香港特别行政区", "澳门特别行政区"]:
-                rows = df_scenario[df_scenario['V1'] == province_map[name]]
+            if name in PROVINCE_MAP_POPULATION and name not in EXCLUDED_REGIONS:
+                rows = df_scenario[df_scenario['V1'] == PROVINCE_MAP_POPULATION[name]]
                 if not rows.empty:
                     return cmap(norm(rows.iloc[0]['Percent Change']))
             return 'lightgrey'

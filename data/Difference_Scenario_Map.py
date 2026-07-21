@@ -5,27 +5,19 @@ spatial difference in mean PM2.5 concentration between them as a map.
 '''
 
 import xarray as xr
-import geopandas as gpd
-import shapely
 import numpy as np
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+from common import build_in_china_mask
 
 fig = plt.figure(figsize = (15, 12))
 ax = plt.axes(projection = ccrs.PlateCarree())
 
-world = gpd.read_file("https://naturalearth.s3.amazonaws.com/110m_cultural/ne_110m_admin_0_countries.zip")
-china = world[world['NAME'] == 'China']
-
 ds_ontime = xr.open_dataset("NC Files and Emission Reports/EmissionReductions2035_on-time-peak-clean-air_2024Met.nc")
 ds_earlypeak = xr.open_dataset("NC Files and Emission Reports/EmissionReductions2035_early-peak-net-zero-clean-air_2024Met.nc")
 
-lon_flat = ds_ontime["lon"].values.flatten()
-lat_flat = ds_ontime["lat"].values.flatten()
-
-in_china_flat = shapely.contains_xy(china.geometry.iloc[0], lon_flat, lat_flat)
-in_china = in_china_flat.reshape(ds_ontime["lon"].shape)
+in_china = build_in_china_mask(ds_ontime["lon"].values, ds_ontime["lat"].values)
         
 difference = ds_ontime["pred_PM25"].mean(dim = "time").values.copy() - ds_earlypeak["pred_PM25"].mean(dim = "time").values.copy()
 difference[~in_china] = np.nan
