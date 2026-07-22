@@ -1,6 +1,6 @@
 '''
 For each pollutant-combination scenario file (binary code decoded to
-a pollutant list), computes the 2020-population-weighted mean PM2.5
+a pollutant list), compute the 2020-population-weighted mean PM2.5
 and the % of population exposed above 25 ug/m3, and saves the
 results to a summary workbook.
 '''
