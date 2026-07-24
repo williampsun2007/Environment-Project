@@ -58,10 +58,10 @@ for index, scenario in enumerate(["Baseline", "Clean Air", "OTPCA", "OTPNZCA", "
     axes[index].set_title(str(scenario))
     axes[index].set_ylabel("CO2 Emissions (tons)")
     
-handles = [mpatches.Patch(color=color, label=dept) for dept, color in department_colors.items()]
-fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.02), ncol=len(department_colors))
+handles = [mpatches.Patch(color = color, label = dept) for dept, color in department_colors.items()]
+fig.legend(handles = handles, loc = "lower center", bbox_to_anchor = (0.5, -0.02), ncol = len(department_colors))
 
 plt.tight_layout(h_pad = 4)
-plt.savefig("Emission Files/CO2_Scenarios.png", bbox_inches="tight")
+plt.savefig("Emission Files/CO2_Scenarios.png", bbox_inches = "tight")
 plt.show()
     
