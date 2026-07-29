@@ -23,7 +23,7 @@ class LoginPage:
     
     #Define a method for logging in
     def login(self, username: str, password: str):
-        self.page.locator("#menu-item-1104 a").click()
+        self.page.locator("#menu-item-1090 a").click()
         self.page.wait_for_selector("button[action='login']")
 
         self.enter_username(username)

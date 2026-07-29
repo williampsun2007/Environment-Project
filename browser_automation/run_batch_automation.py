@@ -34,7 +34,6 @@ def run(playwright: Playwright) -> None:
         try: 
             #Set up the browser and page
             try:
-                #Use chrome if available, otherwise use edge
                 browser = playwright.chromium.launch(headless = False, channel = "chrome")
             except:
                 browser = playwright.chromium.launch(headless = False, channel = "msedge")
@@ -67,24 +66,47 @@ def run(playwright: Playwright) -> None:
 
             #Loop through the excel files and upload each one using the file chooser
             for file_path in excel_files:
-                #Create a new task, fill in the task name, select the year, click through the steps to get to the batch upload page
                 parts = file_path.stem.split("-")
                 task_name = parts[0]
                 year_1 = parts[1]
                 year_2 = parts[2]
 
-                #Create a new task and upload the file for each excel file in the folder
                 simulation_page.create_task(task_name, year_1, year_2)
                 simulation_page.upload_file(str(file_path))
+                time.sleep(10)  # give server time to process
+                print(f"Uploaded: {task_name}")
 
-            #After uploading all the files, loop through the tasks and download the results for each one, save the results to a specified folder
+            #After uploading all the files, loop through the tasks and download the results
+            failed_downloads = []
             for file_path in excel_files:
                 parts = file_path.stem.split("-")
                 task_name = parts[0]
-
-                #Use pathlib to construct the download path for each task, and move the downloaded file to the specified folder
                 download_path = Path(os.getenv("APP_DOWNLOAD_PATH")) / f"{task_name}_results.zip"
-                simulation_page.download_results(task_name, str(download_path))
+
+                #Retry logic for downloads
+                max_retries = 3
+                success = False
+                for attempt in range(max_retries):
+                    try:
+                        simulation_page.download_results(task_name, str(download_path))
+                        print(f"Downloaded: {task_name}")
+                        success = True
+                        break
+                    except Exception as e:
+                        print(f"Download attempt {attempt + 1} failed for {task_name}: {e}")
+                        if attempt < max_retries - 1:
+                            wait_time = 20
+                            print(f"Retrying in {wait_time} seconds...")
+                            time.sleep(wait_time)
+
+                if not success:
+                    print(f"All {max_retries} attempts failed for {task_name}, skipping...")
+                    failed_downloads.append(task_name)
+
+            if failed_downloads:
+                print(f"The following tasks failed to download after {max_retries} attempts:")
+                for task in failed_downloads:
+                    print(f"  - {task}")
 
             print(f"Batch {batch_folder.name} complete. Sleeping...")
 
@@ -92,12 +114,17 @@ def run(playwright: Playwright) -> None:
             browser.close()
 
             if i + 1 < len(batch_folders):
-                time.sleep(900)
+                time.sleep(300)
+
         except Exception as e:
-            if context:
+            try:
                 context.close()
-            if browser:
+            except:
+                pass
+            try:
                 browser.close()
+            except:
+                pass
             
             print(f"Batch {batch_folder.name} failed: {e}")
             continue

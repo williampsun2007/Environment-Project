@@ -42,19 +42,32 @@ class OnlineSimulationPage:
         file_chooser = fc_info.value
         file_chooser.set_files(file_path)
 
+        time.sleep(2)
         self.submit_ok.click()
+        time.sleep(2)
         self.confirm_back.click()
+        time.sleep(2)
         self.edit_control_data.click()
+        time.sleep(2)
         self.confirm_back_2.click()
+        time.sleep(3)  # extra wait after fully done
 
     def download_results(self, task_name: str, download_path: str):
         print(f"Downloading task: {task_name}")
         row = self.page.locator("tr").filter(has=self.page.locator(f"span:text-is('{task_name}')"))
-    
-        download_button = row.locator("button.download")
-        download_button.wait_for(state="visible", timeout=0)
 
+     # Wait for either completed or failed state
+        while True:
+            if row.locator("button.download").is_visible():
+                break  # completed, proceed to download
+            if row.locator("span.case-state-name:text-is('失败')").is_visible():
+                raise Exception(f"Task {task_name} failed on server")
+            time.sleep(5)  # neither yet, keep waiting
+
+        download_button = row.locator("button.download")
+        download_button.wait_for(state = "visible", timeout = 0)
         time.sleep(2)
+
         with self.page.expect_download(timeout=0) as download_info:
             download_button.click()
 
