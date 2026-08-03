@@ -101,4 +101,17 @@ for species, list in species_dict.items():
     print(f"Species: {species}, Greatest Lever: {greatest_lever:.3f}, 10th Lever: {tenth_lever:.3f}, Ratio: {ratio:.3f}")
 print("----------------------")
 
+for pollutant in pollutants:
+    df_pollutant = df_results[df_results["Species"] == pollutant]
+    df_pollutant = df_pollutant[['Province', 'Species', 'Reduction in PM2.5 Pop-Weighted Mean from Base', 'Reduction in % Pop > 25 ug/m3 from Base']]
+    df_pollutant = df_pollutant.sort_values("Reduction in PM2.5 Pop-Weighted Mean from Base", ascending = False)
+    df_pollutant['rank_pm25_mean_reduction'] = range(1, len(df_pollutant) + 1)
+    df_pollutant = df_pollutant.sort_values("Reduction in % Pop > 25 ug/m3 from Base", ascending = False)
+    df_pollutant['rank_pct_reduction'] = range(1, len(df_pollutant) + 1)
+    df_pollutant = df_pollutant.sort_values('rank_pm25_mean_reduction')
+    
+    df_pollutant = df_pollutant[['Province', 'Reduction in PM2.5 Pop-Weighted Mean from Base', 'rank_pm25_mean_reduction',
+                                  'Reduction in % Pop > 25 ug/m3 from Base', 'rank_pct_reduction']]
+    df_pollutant.to_csv(f"Emission Files/OP1 Scenario Analysis/OP1_Leverage_Table_{pollutant}.csv", index = False)
+
 
