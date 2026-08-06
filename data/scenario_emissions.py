@@ -7,6 +7,36 @@ df_co2 = pd.read_excel("Emission Files/Historical Emission/CO2 Emissions.xlsx", 
 df_co2 = df_co2[df_co2['Unnamed: 0'] >= 2010]
 df_co2 = df_co2.set_index("Unnamed: 0")
 
+df_historical_v2_co2 = pd.read_excel("Emission Files/Historical Emission/ABaCAS-EI v2.0 dataset.xlsx", sheet_name = "CO2")
+df_historical_v2_co2 = df_historical_v2_co2[df_historical_v2_co2['Year'] >= 2010]
+df_historical_v2_co2 = df_historical_v2_co2[['Year', 'China']]
+df_historical_v2_co2 = df_historical_v2_co2.groupby('Year').sum().reset_index().drop('Year', axis = 1) * 1000
+
+df_historical_v2_pm25 = pd.read_excel("Emission Files/Historical Emission/ABaCAS-EI v2.0 dataset.xlsx", sheet_name = "PM2.5")
+df_historical_v2_pm25 = df_historical_v2_pm25[df_historical_v2_pm25['Year'] >= 2010]
+df_historical_v2_pm25 = df_historical_v2_pm25[['Year', 'China']]
+df_historical_v2_pm25 = df_historical_v2_pm25.groupby('Year').sum().reset_index().drop('Year', axis = 1) * 1000
+
+df_historical_v2_so2 = pd.read_excel("Emission Files/Historical Emission/ABaCAS-EI v2.0 dataset.xlsx", sheet_name = "SO2")
+df_historical_v2_so2 = df_historical_v2_so2[df_historical_v2_so2['Year'] >= 2010]
+df_historical_v2_so2 = df_historical_v2_so2[['Year', 'China']]
+df_historical_v2_so2 = df_historical_v2_so2.groupby('Year').sum().reset_index().drop('Year', axis = 1) * 1000
+
+df_historical_v2_nox = pd.read_excel("Emission Files/Historical Emission/ABaCAS-EI v2.0 dataset.xlsx", sheet_name = "NOx")
+df_historical_v2_nox = df_historical_v2_nox[df_historical_v2_nox['Year'] >= 2010]
+df_historical_v2_nox = df_historical_v2_nox[['Year', 'China']]
+df_historical_v2_nox = df_historical_v2_nox.groupby('Year').sum().reset_index().drop('Year', axis = 1) * 1000
+
+df_historical_v2_nh3 = pd.read_excel("Emission Files/Historical Emission/ABaCAS-EI v2.0 dataset.xlsx", sheet_name = "NH3")
+df_historical_v2_nh3 = df_historical_v2_nh3[df_historical_v2_nh3['Year'] >= 2010]
+df_historical_v2_nh3 = df_historical_v2_nh3[['Year', 'China']]
+df_historical_v2_nh3 = df_historical_v2_nh3.groupby('Year').sum().reset_index().drop('Year', axis = 1) * 1000
+
+df_historical_v2_voc = pd.read_excel("Emission Files/Historical Emission/ABaCAS-EI v2.0 dataset.xlsx", sheet_name = "VOCs")
+df_historical_v2_voc = df_historical_v2_voc[df_historical_v2_voc['Year'] >= 2010]
+df_historical_v2_voc = df_historical_v2_voc[['Year', 'China']]
+df_historical_v2_voc = df_historical_v2_voc.groupby('Year').sum().reset_index().drop('Year', axis = 1) * 1000
+
 scenarios = ["Baseline", "CleanAir", "OTPCA", "OTPNZCA", "EPNZCA"]
 pollutants = ["CO2", "SO2", "NOx", "NH3", "VOC", "PM25"]
 file_prefix = {
@@ -46,9 +76,21 @@ for i, pollutant in enumerate(pollutants):
             total = sum(float(sheet.cell(row = r, column = c).value) for c in range(4, 35) for r in range(2, 7) if sheet.cell(row = r, column = c).value)
             historical_emission.append(total)
         axes[i].scatter(list(range(2010, 2024)), historical_emission, label = "Historical", marker = "o", color = "black")
+        
+        if pollutant == "SO2":
+            axes[i].scatter(list(range(2010, 2022)), df_historical_v2_so2, label = "Historical v2", marker = "o", color = "purple")
+        elif pollutant == "NOx":
+            axes[i].scatter(list(range(2010, 2022)), df_historical_v2_nox, label = "Historical v2", marker = "o", color = "purple")
+        elif pollutant == "NH3":
+            axes[i].scatter(list(range(2010, 2022)), df_historical_v2_nh3, label = "Historical v2", marker = "o", color = "purple")
+        elif pollutant == "VOC":
+            axes[i].scatter(list(range(2010, 2022)), df_historical_v2_voc, label = "Historical v2", marker = "o", color = "purple")
+        else:
+            axes[i].scatter(list(range(2010, 2022)), df_historical_v2_pm25, label = "Historical v2", marker = "o", color = "purple")
     else:
         df_co2_china = df_co2['China'] * (44 / 12) * 1000000
         axes[i].scatter(list(range(2010, 2025)), df_co2_china, label = "Historical", marker = "o", color = "black")
+        axes[i].scatter(list(range(2010, 2022)), df_historical_v2_co2, label = "Historical v2", marker = "o", color = "purple")
     
     axes[i].set_xticks(list(range(2010, 2031, 4)))
     axes[i].set_ylabel("Emission (tons)")
